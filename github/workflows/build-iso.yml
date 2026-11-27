@@ -1,0 +1,62 @@
+name: Build BredOS ISO
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "iso/**"
+      - "theme/**"
+      - ".github/workflows/**"
+      - "bredos-skeleton.zip"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unpack skeleton zip (first run only)
+        run: |
+          if [ -f bredos-skeleton.zip ]; then
+            unzip -o bredos-skeleton.zip -x ".github/*"
+            rm bredos-skeleton.zip
+            git config user.name "github-actions"
+            git config user.email "actions@github.com"
+            git add -A
+            git commit -m "Unpack BredOS skeleton"
+            git push
+          fi
+
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
+          df -h /
+
+      - name: Build ISO inside a Debian 13 container
+        run: |
+          mkdir -p out
+          docker run --rm --privileged -v "$PWD:/src" -w /src debian:trixie bash iso/build.sh
+
+      - name: Upload ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: BredOS-iso
+          path: |
+            out/*.iso
+            out/*.sha256
+          compression-level: 0
+          if-no-files-found: error
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: out/build.log
+          if-no-files-found: ignore
