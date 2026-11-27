@@ -1,0 +1,76 @@
+name: Test BredOS ISO
+
+on:
+  workflow_run:
+    workflows: ["Build BredOS ISO"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Build run ID to test"
+        required: true
+
+jobs:
+  boot-test:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Download ISO from build run
+        uses: actions/download-artifact@v4
+        with:
+          name: BredOS-iso
+          path: iso-dl
+          run-id: ${{ github.event.workflow_run.id || inputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install QEMU and tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-system-x86 ovmf socat imagemagick
+
+      - name: Enable KVM if available
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_mode"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm || true
+          ls -l /dev/kvm || echo "No KVM, will use slow emulation"
+
+      - name: Boot test (BIOS then UEFI)
+        run: |
+          ISO=$(ls iso-dl/*.iso | head -n1)
+          ACCEL=tcg
+          CPU=max
+          if [ -e /dev/kvm ]; then ACCEL=kvm; CPU=host; fi
+          echo "ISO: $ISO, accel: $ACCEL"
+          mkdir -p shots
+
+          boot() {
+            NAME=$1; shift
+            qemu-system-x86_64 -accel $ACCEL -cpu $CPU -m 4096 -smp 2 \
+              -cdrom "$ISO" -boot d -vga std -display none \
+              -monitor unix:/tmp/$NAME.sock,server,nowait "$@" &
+            PID=$!
+            i=0
+            for W in 40 50 60; do
+              sleep $W
+              i=$((i+1))
+              echo "screendump /tmp/$NAME-$i.ppm" | socat - UNIX-CONNECT:/tmp/$NAME.sock
+              sleep 2
+              convert /tmp/$NAME-$i.ppm shots/$NAME-$i.png
+            done
+            echo quit | socat - UNIX-CONNECT:/tmp/$NAME.sock || kill $PID
+            wait $PID || true
+          }
+
+          boot bios
+          boot uefi -bios /usr/share/ovmf/OVMF.fd
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boot-screenshots
+          path: shots
