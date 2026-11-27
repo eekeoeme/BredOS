@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<labwc_config>
+  <theme>
+    <name>BredOS</name>
+    <cornerRadius>10</cornerRadius>
+  </theme>
+  <keyboard>
+    <default />
+    <keybind key="W-space"><action name="Execute" command="fuzzel" /></keybind>
+    <keybind key="W-Return"><action name="Execute" command="foot" /></keybind>
+    <keybind key="W-e"><action name="Execute" command="pcmanfm" /></keybind>
+  </keyboard>
+</labwc_config>

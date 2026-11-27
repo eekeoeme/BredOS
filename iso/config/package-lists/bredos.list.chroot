@@ -1,0 +1,52 @@
+# --- Base system ---
+sudo
+network-manager
+network-manager-gnome
+dbus-user-session
+libpam-systemd
+polkitd
+pkexec
+xdg-utils
+xdg-user-dirs
+gvfs
+firefox-esr
+
+# --- Hardware support ---
+firmware-linux
+firmware-misc-nonfree
+firmware-realtek
+firmware-iwlwifi
+firmware-atheros
+intel-microcode
+amd64-microcode
+mesa-vulkan-drivers
+libgl1-mesa-dri
+xwayland
+
+# --- Audio ---
+pipewire
+pipewire-pulse
+wireplumber
+pavucontrol
+
+# --- Placeholder desktop (phase 1, replaced by the BredOS shell later) ---
+labwc
+waybar
+foot
+fuzzel
+swaybg
+wl-clipboard
+pcmanfm
+fonts-noto-core
+fonts-noto-color-emoji
+
+# --- Installer ---
+calamares
+calamares-settings-debian
+grub-pc-bin
+grub-efi-amd64-bin
+grub-efi-amd64-signed
+shim-signed
+efibootmgr
+os-prober
+rsync

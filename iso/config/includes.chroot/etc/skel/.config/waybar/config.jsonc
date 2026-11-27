@@ -1,0 +1,13 @@
+{
+  "layer": "top",
+  "position": "bottom",
+  "height": 36,
+  "modules-left": ["custom/launcher", "wlr/taskbar"],
+  "modules-center": ["clock"],
+  "modules-right": ["pulseaudio", "tray"],
+  "custom/launcher": { "format": "🍞", "tooltip": false, "on-click": "fuzzel" },
+  "wlr/taskbar": { "format": "{icon}", "icon-size": 20, "on-click": "activate", "on-click-middle": "close" },
+  "clock": { "format": "{:%H:%M}", "tooltip-format": "{:%A %d %B %Y}" },
+  "pulseaudio": { "format": "{volume}%", "on-click": "pavucontrol" },
+  "tray": { "spacing": 8 }
+}

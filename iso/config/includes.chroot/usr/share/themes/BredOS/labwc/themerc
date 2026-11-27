@@ -1,0 +1,18 @@
+# BredOS window theme. Colours are PLACEHOLDERS until the final palette arrives.
+border.width: 2
+padding.height: 6
+window.active.border.color: #e8892b
+window.inactive.border.color: #3a2c22
+window.active.title.bg.color: #e8892b
+window.inactive.title.bg.color: #2a201a
+window.active.label.text.color: #1b1410
+window.inactive.label.text.color: #a89684
+window.active.button.unpressed.image.color: #1b1410
+window.inactive.button.unpressed.image.color: #a89684
+menu.items.bg.color: #1b1410
+menu.items.text.color: #f5e6d3
+menu.items.active.bg.color: #e8892b
+menu.items.active.text.color: #1b1410
+osd.bg.color: #1b1410
+osd.border.color: #e8892b
+osd.label.text.color: #f5e6d3

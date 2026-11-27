@@ -1,0 +1,7 @@
+* { font-family: "Noto Sans", sans-serif; font-size: 14px; }
+window#waybar { background: #1b1410; color: #f5e6d3; border-top: 2px solid #e8892b; }
+#custom-launcher { padding: 0 14px; font-size: 18px; }
+#custom-launcher:hover, #taskbar button:hover { background: #e8892b; color: #1b1410; }
+#taskbar button { padding: 0 8px; }
+#taskbar button.active { border-bottom: 2px solid #e8892b; }
+#clock, #pulseaudio, #tray { padding: 0 10px; }

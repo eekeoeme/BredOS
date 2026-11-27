@@ -1,0 +1,8 @@
+# BredOS session autostart (placeholder desktop for phase 1)
+if [ -f /usr/share/backgrounds/bredos/default.png ]; then
+  swaybg -i /usr/share/backgrounds/bredos/default.png -m fill >/dev/null 2>&1 &
+else
+  swaybg -c '#1b1410' >/dev/null 2>&1 &
+fi
+waybar >/dev/null 2>&1 &
+nm-applet --indicator >/dev/null 2>&1 &

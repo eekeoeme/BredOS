@@ -1,0 +1,3 @@
+#!/bin/sh
+# Launches the installer as root (the live user has passwordless sudo).
+exec sudo -E env QT_QPA_PLATFORM=xcb calamares

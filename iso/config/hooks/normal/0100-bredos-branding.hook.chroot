@@ -1,0 +1,22 @@
+#!/bin/sh
+# Runs inside the image while it is being built.
+set -e
+
+chmod +x /usr/local/bin/bredos-install
+
+# Clone Debian's Calamares branding as BredOS and recolour it (logos swapped later).
+SRC=/etc/calamares/branding/debian
+DST=/etc/calamares/branding/bredos
+if [ -d "$SRC" ] && [ -f /etc/calamares/settings.conf ]; then
+  rm -rf "$DST"
+  cp -a "$SRC" "$DST"
+  sed -i \
+    -e 's/^componentName:.*/componentName:  bredos/' \
+    -e 's/Debian GNU\/Linux/BredOS/g' \
+    -e 's/Debian/BredOS/g' \
+    -e 's/^\( *sidebarBackground:\).*/\1 "#1b1410"/' \
+    -e 's/^\( *sidebarTextSelect:\).*/\1 "#e8892b"/' \
+    -e 's/^\( *sidebarTextHighlight:\).*/\1 "#e8892b"/' \
+    "$DST/branding.desc"
+  sed -i 's/^branding:.*/branding: bredos/' /etc/calamares/settings.conf
+fi
